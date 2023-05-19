@@ -1,34 +1,23 @@
 <template>
-  <div>{{ user.name }}今年{{ user.info.age }}岁了.是个{{ user.info.gender }}</div>
-  <button @click="changeName">修改名字</button>
-  <button @click="changeAge">修改年龄</button>
+  <div ref="myDiv">使用组件</div>
+  <Form ref="myForm" title="登录表单" @myEmit="handleMyEmit" />
+  <hr />
+  <Form ref="myForm" title="注册表单" />
 </template>
 
 <script setup>
-  import { ref, watch } from "vue";
-  const user = ref({
-    name: "李某",
-    info: {
-      age: 18,
-      gender: "男生",
-    },
+  import { onMounted, ref } from "vue";
+  import Form from "./components/Form.vue";
+  onMounted(() => {
+    console.log(Form);
+    console.log(myDiv.value);
+    console.log(myForm.value);
+    console.log("获取子组件数据", myForm.value.msg.name);
   });
-  const changeName = () => {
-    user.value.name = "🐔";
+  const myDiv = ref(null);
+  const myForm = ref(null);
+  const handleMyEmit = (data) => {
+    console.log("子传父数据", data);
   };
-  const changeAge = () => {
-    user.value.info.age++;
-  };
-  watch(
-    () => user,
-    () => {
-      console.log(user.value.info.age, user.value.name);
-    },
-    {
-      deep: true,
-      //页面进来就监听
-      immediate: true,
-    }
-  );
 </script>
-<style scoped lang="less"></style>
+<style lang="scss" scoped></style>
