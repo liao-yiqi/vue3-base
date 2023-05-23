@@ -1,18 +1,32 @@
 <script setup lang="ts">
   import axios from "axios";
-  import { onMounted, ref } from "vue";
+  import { onMounted, ref, watch } from "vue";
   import { ArticleItem, ResArticles } from "../types/data";
+  const props = defineProps<{
+    activeId: number;
+  }>();
   const list = ref<ArticleItem[]>([]);
-  onMounted(async () => {
+  //   onMounted();
+  const loadPage = async () => {
     const { data } = await axios<ResArticles>({
       url: `http://geek.itheima.net/v1_0/articles`,
       params: {
-        channel_id: 0,
+        channel_id: props.activeId,
         timestamp: Date.now(),
       },
     });
     list.value = data.data.results;
-  });
+  };
+  watch(
+    () => props.activeId,
+    () => {
+      loadPage();
+    },
+    {
+      // 这里是进入页面马上执行, 替代 onMounted 生命周期渲染页面的工作
+      immediate: true,
+    },
+  );
 </script>
 
 <template>
