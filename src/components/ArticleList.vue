@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import axios from "axios";
-  import { onMounted, ref, watch } from "vue";
+  import { ref, watch } from "vue";
   import { ArticleItem, ResArticles } from "../types/data";
   const props = defineProps<{
     activeId: number;
