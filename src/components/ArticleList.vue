@@ -1,16 +1,29 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import axios from "axios";
+  import { onMounted, ref } from "vue";
+  import { ArticleItem, ResArticles } from "../types/data";
+  const list = ref<ArticleItem[]>([]);
+  onMounted(async () => {
+    const { data } = await axios<ResArticles>({
+      url: `http://geek.itheima.net/v1_0/articles`,
+      params: {
+        channel_id: 0,
+        timestamp: Date.now(),
+      },
+    });
+    list.value = data.data.results;
+  });
+</script>
 
 <template>
   <div class="article-list">
-    <div class="article-item" v-for="i in 10" :key="i">
-      <p class="title">迪桑娜开发就加快速度的教案设计顶课了撒建档立卡撒娇大理石</p>
-      <img class="img" src="https://yanxuan-item.nosdn.127.net/7afec01ce36598c7d22173b6c0e7fcf6.jpg" alt="" />
-      <img class="img" src="https://yanxuan-item.nosdn.127.net/7afec01ce36598c7d22173b6c0e7fcf6.jpg" alt="" />
-      <img class="img" src="https://yanxuan-item.nosdn.127.net/7afec01ce36598c7d22173b6c0e7fcf6.jpg" alt="" />
+    <div class="article-item" v-for="item in list" :key="item.art_id">
+      <p class="title">{{ item.title }}</p>
+      <img class="img" v-for="img in item.cover.images" :src="img" alt="" />
       <div class="info">
-        <span>小兵张嘎</span>
-        <span>17评论</span>
-        <span>1天前</span>
+        <span>{{ item.aut_name }}</span>
+        <span>{{ item.comm_count }}</span>
+        <span>{{ item.pubdate }}</span>
       </div>
     </div>
   </div>
