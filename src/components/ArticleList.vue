@@ -2,23 +2,24 @@
   import axios from "axios";
   import { ref, watch } from "vue";
   import { ArticleItem, ResArticles } from "../types/data";
-  const props = defineProps<{
-    activeId: number;
-  }>();
+  import { useNewsStore } from "../store/news";
+  import { storeToRefs } from "pinia";
+  const store = useNewsStore();
+  const { activeId } = storeToRefs(store);
   const list = ref<ArticleItem[]>([]);
   //   onMounted();
   const loadPage = async () => {
     const { data } = await axios<ResArticles>({
       url: `http://geek.itheima.net/v1_0/articles`,
       params: {
-        channel_id: props.activeId,
+        channel_id: activeId.value,
         timestamp: Date.now(),
       },
     });
     list.value = data.data.results;
   };
   watch(
-    () => props.activeId,
+    activeId,
     () => {
       loadPage();
     },

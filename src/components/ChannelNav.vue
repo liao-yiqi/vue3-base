@@ -2,12 +2,10 @@
   import axios from "axios";
   import { onMounted, ref } from "vue";
   import { ResChannels, ChannelItem } from "../types/data";
-  const props = defineProps<{
-    activeId: number;
-  }>();
-  const emit = defineEmits<{
-    (e: "changeActiveId", id: number): void;
-  }>();
+  import { useNewsStore } from "../store/news";
+  import { storeToRefs } from "pinia";
+  const store = useNewsStore();
+  const { activeId } = storeToRefs(store);
   const list = ref<ChannelItem[]>([]);
   onMounted(async () => {
     const { data } = await axios<ResChannels>({
@@ -21,14 +19,14 @@
   <div class="channel-nav">
     <nav class="list">
       <a
-        @click="emit('changeActiveId', item.id)"
         class="item"
-        :class="{ active: props.activeId === item.id }"
+        :class="{ active: activeId === item.id }"
         href="javascript:;"
         v-for="item in list"
         :key="item.id"
+        @click="store.changeActiveId(item.id)"
       >
-        推荐{{ item.name }}
+        {{ item.name }}
       </a>
     </nav>
   </div>
